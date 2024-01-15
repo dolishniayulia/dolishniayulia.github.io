@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Finance Manager</title>
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+<body>
+    <h1>Реєстрація інформації про категорію доходів / витрат</h1>
+    <div id="addCategory">
+        <form id="addCategoryForm" onsubmit="addCategory(); return false;">
+            <label for="categoryName">Назва Категорії:</label>
+            <input type="text" id="categoryName" required>
+            <br>
+            <label for="categoryDescription">Короткий опис:</label>
+            <input type="text" id="categoryDescription">
+            <br>
+            <button type="submit">Зберегти</button>
+            <button type="button" onclick="cancelAdd()">Скасувати</button>
+        </form>
+    </div>
+    
+
+    <script src="add.js"></script>
+</body>
+</html>
