@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Finance Manager</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .tableview{
+            background-color: #f2f2f2;
+            padding: 15px 15px 25px;
+            border-radius: 5px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2 ;
+        }
+        form{
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Personal Finance Manager</h1>
+    <div id="categories">
+        <h2>Категорії витрат / доходів</h2>
+        <div class="tableview">
+            <table id="categoryTable">
+                <thead>
+                    <tr>
+                        <th>№</th>
+                        <th>Назва</th>
+                        <th>Опис</th>
+                        <th>Управління</th>
+                    </tr>
+                </thead>
+                <tbody id="categoryBody">
+
+                </tbody>
+            </table>
+        </div>
+        <form id="categoryForm" onsubmit="addCategory(); return false;">
+            <label for="categoryName">Назва Категорії:</label>
+            <input type="text" id="categoryName" required>
+            <label for="categoryDescription">Опис:</label>
+            <input type="text" id="categoryDescription">
+            <button type="submit">Додати Категорію</button>
+        </form>
+        
+    </div>
+    
+
+    <script>
+        // Перевірка чи існують збережені дані в localStorage
+        const storedCategories = JSON.parse(localStorage.getItem('categories')) || [];
+
+        // Визначення початкових значень списків
+        let categories = storedCategories;
+
+
+        // Оновлення списків на сторінці
+        function updateUI() {
+            // Оновлення категорій
+            const categoryTableBody = document.getElementById('categoryBody');
+            categoryTableBody.innerHTML = '';
+            categories.forEach(category => {
+                const row = categoryTableBody.insertRow();
+                row.innerHTML = `<td>${category.id}</td><td>${category.name}</td><td>${category.description}</td><td><button onclick="editCategory(${category.id})">Edit</button><button onclick="deleteCategory(${category.id})">Delete</button></td>`;
+            });
+
+          
+        }
+
+        // Додавання категорії
+        function addCategory() {
+            const categoryName = document.getElementById('categoryName').value;
+            const categoryDescription = document.getElementById('categoryDescription').value;
+            if (categoryName) {
+                const newCategory = { id: categories.length + 1, name: categoryName, description: categoryDescription };
+                categories.push(newCategory);
+                localStorage.setItem('categories', JSON.stringify(categories));
+                console.log('Added category:', newCategory); // Debugging
+                updateUI();
+
+                // Очистити поля введення після додавання нової категорії
+            categoryNameInput.value = '';
+            categoryDescriptionInput.value = '';
+
+            }
+        }
+
+        // Edit category
+        function editCategory(id) {
+            const editedCategory = categories.find(category => category.id === id);
+            if (editedCategory) {
+                const newName = prompt('Введіть іншу назву:', editedCategory.name);
+                const newDescription = prompt('Введіть інший опис:', editedCategory.description);
+                if (newName !== null && newDescription !== null) {
+                    editedCategory.name = newName;
+                    editedCategory.description = newDescription;
+                    localStorage.setItem('categories', JSON.stringify(categories));
+                    updateUI();
+                }
+            }
+        }
+
+        // Delete category
+        function deleteCategory(id) {
+        const confirmed = confirm('Ви впевнені що хочете видалити цю категорію?');
+        if (confirmed) {
+            const indexToDelete = categories.findIndex(category => category.id === id);
+            categories.splice(indexToDelete, 1);
+
+            // Оновити ідентифікатори категорій після видалення
+            for (let i = indexToDelete; i < categories.length; i++) {
+                categories[i].id = i + 1;
+            }
+
+            localStorage.setItem('categories', JSON.stringify(categories));
+            updateUI();
+        }
+    }
+
+        // 
+        
+        // Виклик функції оновлення при завантаженні сторінки
+        updateUI();
+    </script>
+</body>
+</html>
